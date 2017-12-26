@@ -74,11 +74,14 @@
         <div class="container">
             <div class="col-md-8">
                 <div class="article-list">
+                       <div>测试用户：simayi 密码：123456</div>
+                </div>
+                <div class="article-list">
                     {% for article in user_list %}
                         <div class="article-item" style="padding: 5px 0">
                             <h4 class="art-header"><a href="/{{ article.blog.site }}/{{ article.nid }}.html">{{ article.title }}</a></h4>
                             <div class="art-body clearfix"> {# clearfix 清除右边的浮动#}
-                                <a class="left" style="width: 55px;height: 55px"><img src="http://127.0.0.1:8000/{{ article.blog.user.avatar }}" ></a>  {# 数据库里存类似图片路径 /static/imgs/Gmu.JPG   #}
+                                <a class="left" style="width: 55px;height: 55px"><img src="/{{ article.blog.user.avatar }}" ></a>  {# 数据库里存类似图片路径 /static/imgs/Gmu.JPG   #}
                                 {{ article.summary }}  {# 文章简介#}
                             </div>
                             <div class="art-footer">
