@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+#_*_coding:utf-8_*_
+
 from django.forms import Form,fields,widgets
 from django.core.exceptions import ValidationError
 from app01 import models

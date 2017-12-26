@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+#_*_coding:utf-8_*_
 from bs4 import BeautifulSoup
 
 class XSSFilter(object):

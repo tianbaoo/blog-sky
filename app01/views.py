@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+#_*_coding:utf-8_*_
+
 from django.shortcuts import render,redirect,HttpResponse
 from app01 import models
 from app01 import forms

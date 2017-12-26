@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+#_*_coding:utf-8_*_
 from django.db import models
 
 class UserInfo(models.Model):
