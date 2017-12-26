@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>后台管理</title>
+    <link rel="stylesheet" href="/static/bootstrap-3.3.7-dist/css/bootstrap.css">
+    <link rel="stylesheet" href="/static/font-awesome-4.7.0/css/font-awesome.css">
+    <style>
+        body{
+            margin: 0;
+            padding: 0;
+        }
+        .pg_header{
+            height: 50px;
+            min-width: 1190px;
+            line-height: 50px;
+            background-color: #337ab7;
+        }
+        .pg_header .r_menus{
+            float: right;
+        }
+        .pg_header .r_menus a{
+            display: inline-block;
+            padding: 0 15px;
+            color: white;
+            font-size: 20px;
+            text-decoration: none;
+        }
+        .pg_header .r_menus a:hover{
+            background-color: #5bc0de;
+            text-decoration: none;
+        }
+        .menus{
+            width: 200px;
+            position: absolute;
+            top: 50px;
+            left:0;
+            bottom: 0;
+            background-color: #d5d5d5;
+        }
+        .logo{
+            float: left;
+            text-align: center;
+            width: 200px;
+            font-size: 20px;
+            color: white;
+        }
+        .pg_header .user_info a{
+            display: block;
+            font-size: 20px;
+            padding: 2px;
+        }
+        .content{
+            position: absolute;
+            top: 50px;
+            left: 200px;
+            right: 0;
+            bottom: 0;
+            overflow: scroll;
+            background-color: white;
+            z-index: 99;
+        }
+        .pg_body .menus a{
+            display: block;
+            font-size: 20px;
+            width: 200px;
+            height: 50px;
+            margin-bottom: 0;
+            text-align: center;
+            line-height: 50px;
+            text-decoration: none;
+        }
+        .pg_body .menus a:hover{
+            background-color: #999999;
+            color: white;
+            text-decoration: none;
+        }
+        .content{
+            border: solid 1px red;
+        }
+        .condition a{
+            display: inline-block;
+            padding: 5px;
+        }
+        .condition a.active{
+            color:red;
+        }
+        .title{
+            width: 60px;height: 35px;font-size: 20px;
+        }
+        .span1{
+            width: 100px;height: 35px;font-size: 20px;padding: 0 10px
+        }
+        .article_title{
+            width: 600px;
+        }
+        .article_summary{
+            width: 1200px;
+            height: 100px;
+        }
+    </style>
+</head>
+<body>
+    <div class="pg_header">
+        <div class="logo">{{ blog.user.nickname }}的后台管理</div>
+
+        <div class="r_menus">
+            <a href="#">当前用户:{{ blog.user.nickname }}</a>
+            <a href="/logout/">注销</a>
+        </div>
+    </div>
+    <div class="pg_body">
+        <div class="menus">
+            <a href="/management/1-0-0-0">文章管理</a>
+            <a href="#">发表文章 </a>
+        </div>
+        <div class="content">
+            <form action="/add_article/{{ blog.nid }}" method="POST" novalidate>
+                {% csrf_token %}
+                <br>
+                <div>
+                    <span style="color: #00bbee;font-size: 20px">文章标题:</span>
+                    {{ obj.article_title }}{{ obj.errors.article_title.0 }}
+                </div>
+                <br>
+                <div style="height: 100px;width: 1200px">
+                    <div style="color: #00bbee;font-size: 20px">文章简介:</div>
+                    {{ obj.article_summary }}{{ obj.errors.article_summary.0 }}
+                </div>
+                <br>
+                <br>
+                <div>
+{#                    <textarea name="text_file" id="t1" cols="30" rows="10"></textarea>#}
+                    {{ obj.content }}
+                </div>
+                <div>
+                    网站分类:
+                    {{ obj.article_type_list }}
+                </div>
+                <div>
+                    个人分类:
+                    {{ obj.category_list }}
+                </div>
+                <div>
+                    个人标签:
+                    {{ obj.tag_list }}
+                </div>
+                <input type="submit" value="发布" />
+                <div style="height: 300px"></div>
+                <div>{{ text_file|safe }}</div>
+            </form>
+        </div>
+    </div>
+    <script src="/static/kindeditor-4.1.10/kindeditor-all.js"></script>
+    <script src="/static/jquery-3.2.1.js"></script>
+    <script>
+
+{#        $(function () {#}
+{#           // 通过Ajax发送POST请求,传给后端所选的分类、标签等#}
+{#            $.ajax({#}
+{#                url:'/add_article/{{ blog.nid }}',#}
+{#                type:'GET',#}
+{#                data:{'article_type_id':$("input[name='article_type_list']:checked").val(),#}
+{#                    'category_id':$("input[name='category_list']:checked").val(),#}
+{#                    'tag_id':$("input[name='tag_list']:checked").val(),#}
+{#                    'csrfmiddlewaretoken':'{{ csrf_token }}'#}
+{#                    },#}
+{#                dataType:'JSON'#}
+{#                });#}
+{#        });#}
+        KindEditor.create('#t1',{
+            width:'1150px',
+            height:'400px',
+            uploadJson: '/upload_img.html', // 在内容中有图片时上传到指定路径
+            extraFileUploadParams:{
+                "csrfmiddlewaretoken":"{{ csrf_token }}"
+            }})
+    </script>
+</body>
+</html>

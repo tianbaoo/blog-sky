@@ -1,0 +1,181 @@
+{% extends 'layout.html' %}
+{% block css %}
+    <style>
+        body{
+            margin: 0;
+            padding: 0;
+        }
+        .pg_header{
+            height: 50px;
+            min-width: 1190px;
+            line-height: 50px;
+            background-color: #337ab7;
+        }
+        .pg_header .r_menus{
+            float: right;
+        }
+        .pg_header .r_menus a{
+            display: inline-block;
+            padding: 0 15px;
+            color: white;
+            font-size: 20px;
+            text-decoration: none;
+        }
+        .pg_header .r_menus a:hover{
+            background-color: #5bc0de;
+            text-decoration: none;
+        }
+        .menus{
+            width: 200px;
+            position: absolute;
+            top: 50px;
+            left:0;
+            bottom: 0;
+            background-color: #d5d5d5;
+        }
+        .logo{
+            float: left;
+            text-align: center;
+            width: 200px;
+            font-size: 20px;
+            color: white;
+        }
+        .pg_header .user_info a{
+            display: block;
+            font-size: 20px;
+            padding: 2px;
+        }
+        .content{
+            position: absolute;
+            top: 50px;
+            left: 200px;
+            right: 0;
+            bottom: 0;
+            overflow: scroll;
+            background-color: white;
+            z-index: 99;
+        }
+        .pg_body .menus a{
+            display: block;
+            font-size: 20px;
+            width: 200px;
+            height: 50px;
+            margin-bottom: 0;
+            text-align: center;
+            line-height: 50px;
+            text-decoration: none;
+        }
+        .pg_body .menus a:hover{
+            background-color: #999999;
+            color: white;
+            text-decoration: none;
+        }
+{#        .content{#}
+{#            border: solid 1px red;#}
+{#        }#}
+        .condition a{
+            display: inline-block;
+            padding: 5px;
+        }
+        .condition a.active{
+{#            background-color: #204d74;#}
+            color:red;
+        }
+        .title{
+            width: 60px;height: 35px;font-size: 20px;
+        }
+        .span1{
+            width: 100px;height: 35px;font-size: 20px;padding: 0 10px
+        }
+    </style>
+{% endblock %}
+
+{% block xx  %}
+    <div style="font-size: 20px;padding: 0 10px" class="condition">
+        网站分类:
+        {% if kwargs.article_type_id == 0 %}
+            <a class="active" href="/management/{{ user.nid }}-0-{{ kwargs.category_id }}-{{ kwargs.tags__nid }}" class="title">全部</a>
+        {% else %}
+            <a href="/management/{{ user.nid }}-0-{{ kwargs.category_id }}-{{ kwargs.tags__nid }}" class="title">全部</a>
+        {% endif %}
+        {% for row in type_choices %}
+            {% if row.0 == kwargs.article_type_id %}
+                <span class="span1"><a class="active" href="/management/{{ user.nid }}-{{ row.0 }}-{{ kwargs.category_id }}-{{ kwargs.tags__nid }}" >{{ row.1 }}</a></span>
+            {% else %}
+                <span class="span1"><a href="/management/{{ user.nid }}-{{ row.0 }}-{{ kwargs.category_id }}-{{ kwargs.tags__nid }}" >{{ row.1 }}</a></span>
+            {% endif %}
+        {% endfor %}
+    </div>
+    <div style="font-size: 20px;padding: 0 10px" class="condition">
+        个人分类:
+        {% if kwargs.category_id == 0 %}
+            <a class="active" href="/management/{{ user.nid }}-{{ kwargs.article_type_id }}-0-{{ kwargs.tags__nid }}"  class="title">全部</a>
+        {% else %}
+            <a href="/management/{{ user.nid }}-{{ kwargs.article_type_id }}-0-{{ kwargs.tags__nid }}"  class="title">全部</a>
+        {% endif %}
+        {% for row in category_list %}
+            {% if row.nid == kwargs.category_id %}
+                <span class="span1"><a class="active" href="/management/{{ user.nid }}-{{ kwargs.article_type_id }}-{{ row.nid }}-{{ kwargs.tags__nid }}" >{{ row.title }}</a></span>
+            {% else %}
+                <span class="span1"><a href="/management/{{ user.nid }}-{{ kwargs.article_type_id }}-{{ row.nid }}-{{ kwargs.tags__nid }}" >{{ row.title }}</a></span>
+            {% endif %}
+        {% endfor %}
+    </div>
+    <div style="font-size: 20px;padding: 0 10px" class="condition">
+        个人标签:
+        {% if kwargs.tags__nid == 0 %}
+            <a class="active" href="/management/{{ user.nid }}-{{ kwargs.article_type_id }}-{{ kwargs.category_id }}-0" class="title">全部</a>
+        {% else %}
+            <a href="/management/{{ user.nid }}-{{ kwargs.article_type_id }}-{{ kwargs.category_id }}-0" class="title">全部</a>
+        {% endif %}
+        {% for row in tag_list %}
+            {% if row.nid == kwargs.tags__nid %}
+                <span class="span1"> <a class="active" href="/management/{{ user.nid }}-{{ kwargs.article_type_id }}-{{ kwargs.category_id }}-{{ row.nid }}" >{{ row.title }}</a></span>
+            {% else %}
+                <span class="span1"> <a href="/management/{{ user.nid }}-{{ kwargs.article_type_id }}-{{ kwargs.category_id }}-{{ row.nid }}" >{{ row.title }}</a></span>
+            {% endif %}
+        {% endfor %}
+    </div>
+    <div class="container">
+        <div class="col-md-10">
+            <div class="article-list">
+                {% for article in user_list %}
+                    <div class="article-item" style="padding: 5px 0">
+                        <h4 class="art-header"><a href="/{{ blog.site }}/{{ article.nid }}.html">{{ article.title }}</a></h4>
+                        <div class="art-body clearfix"> {# clearfix 清除右边的浮动#}
+                            {{ article.summary }}  {# 文章简介#}
+                        </div>
+                        <div class="art-footer">
+                            <a href="/{{ article.blog.user.username }}/" style="padding: 5px 20px 5px 0">
+                                <span class="fa fa-user-circle"></span> {# 用户图标#}
+                                {{ article.blog.user.nickname }}         {# 用户名#}
+                            </a>
+                            <a href="#" class="foot" onclick="updown(this,{{ article.nid }},1);">
+                                <span class="glyphicon glyphicon-thumbs-up"></span> {# fa fa-thumbs-up点赞图标#}
+                                点赞({{ article.up_count }})         {# 点赞个数#}
+                            </a>
+                            <a href="#" class="foot" onclick="updown(this,{{ article.nid }},0);">
+                                <span class="glyphicon glyphicon-thumbs-down"></span> {# 踩图标#}
+                                踩({{ article.down_count }})         {# 踩个数#}
+                            </a>
+                            <a href="#" class="foot">
+                                <span class="glyphicon glyphicon-comment"></span> {# 评论图标#}
+                                评论({{ article.comment_count }})         {# 评论个数#}
+                            </a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            <nav aria-label="Page navigation">
+              <ul class="pagination">
+                  {{ page_info.pager|safe }}
+              </ul>
+            </nav>
+        </div>
+    </div>
+{% endblock %}
+{% block js %}
+    <script src="/static/jquery-3.2.1.js"></script>
+{% endblock %}
+
+

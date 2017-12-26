@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="/static/bootstrap-3.3.7-dist/css/bootstrap.css">
+    <link rel="stylesheet" href="/static/font-awesome-4.7.0/css/font-awesome.css">
+    <link rel="stylesheet" href="/static/css/commons.css">
+    <link rel="stylesheet" href="/static/css/theme/{{ blog.theme }}.css">
+</head>
+<body>
+    <nav class="navbar navbar-default no-radius">
+      <div class="container title">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header ">
+          <a class="navbar-brand" href="/{{ blog.user.username }}/" style="font-size: 35px">{{ blog.title }}</a>
+        </div>
+        <div class="navbar-header ">
+          <a class="navbar-brand" href="/" style="font-size: 28px">博客天地</a>
+        </div>
+      </div><!-- /.container-fluid -->
+    </nav>
+
+    <div class="container">
+        <div class="col-md-3">
+            <div class="panel panel-default">
+                <div class="panel-heading">分类</div>
+                <div class="panel-body">
+                   <ul>
+                       {% for row in category_list %}
+                           <li><a href="/{{ blog.site }}/category/{{ row.category_id }}/">{{ row.category__title }} ({{ row.ct }})</a></li>
+                       {% endfor %}
+                   </ul>
+                </div>
+            </div>
+
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">标签</h3>
+                </div>
+                <div class="panel-body">
+                   <ul>
+                       {% for row in tag_list %}
+                           <li><a href="/{{ blog.site }}/tag/{{ row.tag_id }}/">{{ row.tag__title }} ({{ row.ct }})</a></li>
+                       {% endfor %}
+                   </ul>
+                </div>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">时间</h3>
+                </div>
+                <div class="panel-body">
+                   <ul>
+                       {% for row in create_time_list %}
+                           <li><a href="/{{ blog.site }}/create_time/{{ row.ctime }}/">{{ row.ctime }} ({{ row.c }})</a></li>
+                       {% endfor %}
+                   </ul>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <div class="article-list">
+                {% for article in user_list %}
+                    <div class="article-item" style="padding: 5px 0">
+                        <h4 class="art-header"><a href="/{{ blog.site }}/{{ article.nid }}.html">{{ article.title }}</a></h4>
+                        <div class="art-body clearfix"> {# clearfix 清除右边的浮动#}
+                            <a class="left" style="width: 55px;height: 55px"><img src="http://127.0.0.1:8000/{{ article.blog.user.avatar }}" ></a>  {# 数据库里存类似图片路径 /static/imgs/Gmu.JPG   #}
+                            {{ article.summary }}  {# 文章简介#}
+                        </div>
+                        <div class="art-footer">
+                            <a href="/{{ article.blog.user.username }}/" style="padding: 5px 20px 5px 0">
+                                <span class="fa fa-user-circle"></span> {# 用户图标#}
+                                {{ article.blog.user.nickname }}         {# 用户名#}
+                            </a>
+                            <a href="#" class="foot" onclick="updown(this,{{ article.nid }},1);">
+                                <span class="glyphicon glyphicon-thumbs-up"></span> {# fa fa-thumbs-up点赞图标#}
+                                点赞({{ article.up_count }})         {# 点赞个数#}
+                            </a>
+                            <a href="#" class="foot" onclick="updown(this,{{ article.nid }},0);">
+                                <span class="glyphicon glyphicon-thumbs-down"></span> {# 踩图标#}
+                                踩({{ article.down_count }})         {# 踩个数#}
+                            </a>
+                            <a href="#" class="foot">
+                                <span class="glyphicon glyphicon-comment"></span> {# 评论图标#}
+                                评论({{ article.comment_count }})         {# 评论个数#}
+                            </a>
+                            <a href="#" class="foot" id="error">
+                                <span id="err"></span>
+                            </a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            <nav aria-label="Page navigation">
+              <ul class="pagination">
+                  {{ page_info.pager|safe }}
+              </ul>
+            </nav>
+        </div>
+    </div>
+    <script src="/static/jquery-3.2.1.js"></script>
+    <script>
+        function updown(self,nid,val){
+            $.ajax({
+                url: '/updown',
+                data:{'val':val,'nid':nid,'csrfmiddlewaretoken':'{{ csrf_token }}'},
+                type: "POST",
+                dataType:'JSON',
+                success:function(arg){
+                    if(arg.status == "200"){
+                        // 显示赞个数+1
+                        $('#up').innerText = $('#up').innerText + 1;
+                        location.reload()
+                    }else if(arg.status=="201"){
+                        // 显示踩个数+1
+                        $('#down').innerText = $('#down').innerText + 1;
+                        location.reload()
+                    }
+                    else if(arg.status=="202"){
+                        // 显示错误信息
+                        alert(arg.msg);
+                    }
+                    else if(arg.status=="203"){
+                        // 显示错误信息
+                         alert(arg.msg);
+                    }else {
+                    }
+                }
+            })
+        }
+    </script>
+</body>
+</html>

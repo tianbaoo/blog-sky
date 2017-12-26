@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>技术论坛</title>
+    <link rel="stylesheet" href="/static/bootstrap-3.3.7-dist/css/bootstrap.css">
+    <link rel="stylesheet" href="/static/font-awesome-4.7.0/css/font-awesome.css">
+    <link rel="stylesheet" href="/static/css/commons.css">
+    <style>
+     /* 把头像变圆和当鼠标指向头像时外圆变色 */
+    .img-circle {
+        -moz-border-radius: 50%;
+        -webkit-border-radius: 50%;
+        border-radius: 50%;
+    }
+    .img-circle:hover {
+        -moz-box-shadow: 0 0 25px rgba(0, 255, 178, 1);
+        -webkit-box-shadow: 0 0 25px rgba(0, 255, 178, 1);
+        box-shadow: 0 0 25px rgba(0, 255, 178, 1);
+        cursor: pointer;
+    }
+    </style>
+</head>
+{#当页面加载完的时候执行show函数#}
+<body onload='show(this)'>
+    <nav class="navbar navbar-default no-radius">
+      <div class="container">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/">博客天地</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+          <ul class="nav navbar-nav">
+            {# 如果页面中/all/type_id 中的type_id存在,则'全部'不选中 #}
+          {% if type_id %}
+            <li><a href="/">全部</a></li> {# href="/" 表示访问主页   #}
+          {% else %} {# type_id不存在,则'全部'选中   #}
+            <li class="active"><a href="/">全部</a></li>
+          {% endif %}
+              {% for item in type_choices_list %} {# 遍历网站大分类  #}
+                  {% if item.0 == type_id %} {# 大分类ID等于URL中的type_id时  #}
+                        <li class="active"><a href="/all/{{ item.0 }}/">{{ item.1 }}</a></li> {# 选中 #}
+                  {% else %}
+                        <li><a href="/all/{{ item.0 }}/">{{ item.1 }}</a></li>
+                  {% endif %}
+              {% endfor %}
+          </ul>
+          <ul id="miss" class="nav navbar-nav navbar-right" >
+            <li><a href="/register/">注册</a></li>
+            <li><a href="/login/">登录</a></li>
+          </ul>
+
+          <ul id="uu" class="left nav navbar-nav navbar-right" style="display: none" >
+            <li style="width: 50px;height: 50px;margin-top: 0"><img class="img-circle" style="width: 50px;height: 50px" src="/{{ user.avatar }}" ></li>
+            <li style="width: 60px;height: 50px;text-align: center"><a class="{{ user.nickname }}" style="width: 90px;height: 50px" href="#">{{ user.nickname }}</a></li>
+            <li style="width: 50px;height: 50px;"><a style="width: 72px;height: 50px;text-align: center" href="/logout/">注销</a></li>
+            <li style="width: 50px;height: 50px;"><a style="width: 72px;height: 50px;text-align: center" href="/management/{{ user.nid }}-0-0-0">管理</a></li>
+          </ul>
+            <input class="inp" type="text" style="display: none" value="{{ user.nickname }}">
+
+        </div><!-- /.navbar-collapse -->
+      </div><!-- /.container-fluid -->
+    </nav>
+
+    <div>
+        <div class="container">
+            <div class="col-md-8">
+                <div class="article-list">
+                    {% for article in user_list %}
+                        <div class="article-item" style="padding: 5px 0">
+                            <h4 class="art-header"><a href="/{{ article.blog.site }}/{{ article.nid }}.html">{{ article.title }}</a></h4>
+                            <div class="art-body clearfix"> {# clearfix 清除右边的浮动#}
+                                <a class="left" style="width: 55px;height: 55px"><img src="http://127.0.0.1:8000/{{ article.blog.user.avatar }}" ></a>  {# 数据库里存类似图片路径 /static/imgs/Gmu.JPG   #}
+                                {{ article.summary }}  {# 文章简介#}
+                            </div>
+                            <div class="art-footer">
+                                <a href="/{{ article.blog.user.username }}/" style="padding: 5px 20px 5px 0">
+                                    <span class="fa fa-user-circle"></span> {# 用户图标#}
+                                    {{ article.blog.user.nickname }}         {# 用户名#}
+                                </a>
+                                <a href="#" class="foot" onclick="updown(this,{{ article.nid }},1);">
+                                    <span class="glyphicon glyphicon-thumbs-up"></span> {# fa fa-thumbs-up点赞图标#}
+                                    点赞({{ article.up_count }})         {# 点赞个数#}
+                                </a>
+                                <a href="#" class="foot" onclick="updown(this,{{ article.nid }},0);">
+                                    <span class="glyphicon glyphicon-thumbs-down"></span> {# 踩图标#}
+                                    踩({{ article.down_count }})         {# 踩个数#}
+                                </a>
+                                <a href="#" class="foot" onclick="comment()">
+                                    <span class="glyphicon glyphicon-comment"></span> {# 评论图标#}
+                                    评论({{ article.comment_count }})         {# 评论个数#}
+                                </a>
+                                <a href="#" class="foot" id="error">
+                                <span id="err"></span>
+                                </a>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            <nav aria-label="Page navigation">
+              <ul class="pagination">
+                  {{ page_info.pager|safe }}
+              </ul>
+            </nav>
+            </div>
+            <div class="col-md-4">
+                <div class="panel panel-default">
+                    <div class="panel-heading">吐血推荐</div>
+                    <div class="panel-body">
+                        {% for row in recommend_list %}
+                            <p><a href="/{{ row.blog.user.username }}/{{ row.nid }}.html">{{ row.title }}</a></p>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="panel panel-default">
+                    <div class="panel-heading">最新文章</div>
+                    <div class="panel-body">
+                        {% for row in new_list %}
+                            <p><a href="/{{ row.blog.user.username }}/{{ row.nid }}.html">{{ row.title }}</a></p>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/jquery-3.2.1.js"></script>
+    <script>
+        function show(self) {
+            // 加载页面时执行show函数检查用户是否已登录,如果没有登录则显示登录和注册页面,否则显示用户头像和相关信息
+            if ($('.inp').val()){  // 这个input标签是为了检测是否有value="{{ user.nickname }}存在,存在则已登录
+                var  miss = document.getElementById('miss').style.display='none'; // 隐藏登录注册的标签
+               var uu = document.getElementById('uu').style.display='inline'; // 显示头像和用户名等
+            }
+            else{
+                  uu = document.getElementById('uu').style.display='none'; // 隐藏头像和用户名等
+                  miss = document.getElementById('miss').style.display='inline'; // 显示登录注册的标签
+                 }
+        }
+        // 点赞和踩的功能
+        function updown(self,nid,val){
+            $.ajax({
+                url: '/updown',
+                // 通过ajax提交的时候要携带'csrfmiddlewaretoken':'{{ csrf_token }}'服务器才会认识
+                // val值等于1表示赞,0表示踩 nid是文章id
+                data:{'val':val,'nid':nid,'csrfmiddlewaretoken':'{{ csrf_token }}'},
+                type: "POST",
+                // 视图函数中的返回值是json类型,所以下面需要设置dataType:'JSON'
+                dataType:'JSON',
+                success:function(arg){
+                    if(arg.status == "200"){
+                        // 显示赞个数+1
+                        $('#up').innerText = $('#up').innerText + 1; // 页面的赞值加1
+                        location.reload()                               // 重新加载页面
+                    }else if(arg.status=="201"){
+                        // 显示踩个数+1
+                        $('#down').innerText = $('#down').innerText + 1;
+                        location.reload()
+                    }
+                    else if(arg.status=="202"){
+                        // 显示错误信息
+                        alert(arg.msg);
+                    }
+                    else if(arg.status=="203"){
+                        // 显示错误信息 已经赞或踩过
+                         alert(arg.msg);
+                    }else {
+                    }
+                }
+            })
+        }
+    </script>
+</body>
+</html>

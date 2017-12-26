@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="/static/bootstrap-3.3.7-dist/css/bootstrap.css" />
+    <link rel="stylesheet" href="/static/font-awesome-4.7.0/css/font-awesome.css" />
+    <link rel="stylesheet" href="/static/css/commons1.css">
+    {% block css %}{% endblock %}
+
+
+</head>
+<body>
+
+    <div class="pg-header">
+        <div class="logo left">后台管理</div>
+        <a class="" style="color: white;font-size: 18px;margin-left: 10px" href="/">首页</a>
+        <div class="rmenus right">
+            <a  style="font-size: 18px"><i class="fa " aria-hidden="true"></i>当前用户: {{ user.nickname }}</a>
+            <a href="/logout/"  style="font-size: 18px"><i class="fa " aria-hidden="true"></i>注销</a>
+        </div>
+    </div>
+    <div class="pg-body">
+        <div class="menus">
+            <a href="/add_article/{{ user.nid }}"> <i class="fa fa-cogs" aria-hidden="true"></i> 发表文章</a>
+            <a href="/layout_category/{{ user.nid }}.html"> <i class="fa fa-cogs" aria-hidden="true"></i> 分类管理</a>
+            <a href="/layout_tag/{{ user.nid }}.html"> <i class="fa fa-cogs" aria-hidden="true"></i> 标签管理</a>
+            <a href="#"> <i class="fa fa-cogs" aria-hidden="true"></i> 个人信息</a>
+        </div>
+        <div class="content">
+            {% block xx  %}{% endblock %}
+        </div>
+    </div>
+    {% block js %}{% endblock %}
+</body>
+</html>

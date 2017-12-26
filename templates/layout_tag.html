@@ -1,0 +1,33 @@
+{% extends 'layout.html' %}
+{% block xx  %}
+    <table border="1" cellspacing="0" class="table table-hover">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>标签名</th>
+                <th>所属博客</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in result %}
+                <tr>
+                    <td>{{ row.nid }}</td>
+                    <td>{{ row.title }}</td>
+                    <td cls_id="{{ row.blog_id }}">{{ row.blog.user.nickname }}</td>
+                    <td>
+                        <a href="#">删除</a>|
+                        <a href="/edit_tag/?nid={{ row.nid }}">编辑</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div style="margin-left: 5px">
+        <a href="/add_tag.html/" class="btn btn-primary">添加标签</a>
+    </div>
+{% endblock %}
+{% block js %}
+    <script src="/static/bootstrap-3.3.7-dist/css/bootstrap.css"></script>
+{% endblock %}

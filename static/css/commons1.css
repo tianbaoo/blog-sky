@@ -1,0 +1,77 @@
+body{
+            margin: 0;
+        }
+        .left{
+            float: left;
+        }
+        .right{
+            float: right;
+        }
+        .hide{
+            display: none;
+        }
+        .pg-header{
+            height: 48px;
+            min-width: 1190px;
+            background-color: #204d74;
+            line-height: 48px;
+        }
+        .pg-header .logo{
+            color: white;
+            font-size: 18px;
+            width: 200px;
+            text-align: center;
+            border-right: 1px solid #8a6d3b;
+        }
+        .pg-header .rmenus a{
+            display: inline-block;
+            padding: 0 15px;
+            color: white;
+        }
+        .pg-header .rmenus a:hover{
+            background-color: #269abc;
+        }
+        .pg-header .avatar{
+            padding: 0 20px;
+        }
+        .pg-header .avatar img{
+            border-radius: 50%;
+        }
+        .pg-header .avatar .user-info{
+            display: none;
+            background-color: white;
+            border: 1px solid #dddddd;
+            position: absolute;width: 200px;top: 48px;right: 2px;color: white;z-index: 100;
+        }
+        .pg-header .avatar:hover .user-info{
+            display: block;
+        }
+        .pg-header .avatar .user-info a{
+            display: block;
+        }
+        .menus{
+            width: 200px;
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            top: 48px;
+            border-right: 1px solid #dddddd;
+            background-color: white;
+
+        }
+        .content{
+            position: absolute;
+            left: 200px;
+            right: 0;
+            top: 48px;
+            bottom: 0;
+            min-width: 990px;
+            overflow: scroll;
+            z-index: 99;
+        }
+        .pg-body .menus a{
+
+            display: block;
+            padding: 10px 30px;
+            border-bottom: 1px dashed gray;
+        }

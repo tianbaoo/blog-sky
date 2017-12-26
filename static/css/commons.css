@@ -1,0 +1,18 @@
+.left{
+    float: left; /*float: left 用的比较多，所以做成这样以后直接在需要的html里的class直接加left即可 */
+}
+.foot{
+    padding: 10px 20px;
+    width: 30px;
+    /*border: solid red 1px;*/
+
+}
+.no-radius{
+    border-radius: 0 !important;
+}
+
+.article-list .article-item .art-body img{
+    width: 50px;
+    height: 50px;
+}
+

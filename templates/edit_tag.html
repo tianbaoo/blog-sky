@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="/static/bootstrap-3.3.7-dist/css/bootstrap.css" />
+    <link rel="stylesheet" href="/static/font-awesome-4.7.0/css/font-awesome.css" />
+    <link rel="stylesheet" href="/static/css/commons1.css">
+    {% block css %}{% endblock %}
+</head>
+<body>
+
+    <div class="pg-header">
+        <div class="logo left">后台管理</div>
+        <a class="" style="color: white;font-size: 18px;margin-left: 10px" href="/">首页</a>
+    </div>
+    <div class="pg-body">
+        <div class="menus">
+            <a href="#"> <i class="fa fa-cogs" aria-hidden="true"></i> 发表文章</a>
+            <a href="#"> <i class="fa fa-cogs" aria-hidden="true"></i> 分类管理</a>
+            <a href="#"> <i class="fa fa-cogs" aria-hidden="true"></i> 标签管理</a>
+            <a href="#"> <i class="fa fa-cogs" aria-hidden="true"></i> 个人信息</a>
+        </div>
+        <div class="content">
+            <form action="/edit_tag/" method="POST">
+                <input type="text" name="name" value="{{ old_tag_name.title }}">
+                <input type="text" name="tag_id" style="display: none" value="{{ tag_id }}">
+                <div style="margin-left: 5px;margin-top: 10px">
+                    <input  class="btn btn-primary" type="submit" value="提交">
+                </div>
+            </form>
+        </div>
+    </div>
+    {% block js %}{% endblock %}
+</body>
+</html>

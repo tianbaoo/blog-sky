@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="/static/bootstrap-3.3.7-dist/css/bootstrap.css">
+    <link rel="stylesheet" href="/static/font-awesome-4.7.0/css/font-awesome.css">
+    <style>
+        .login{
+            width: 500px;
+            margin: 0 auto;
+            margin-top: 50px;
+        }
+        .f1{
+            position: absolute;height: 80px;width: 80px;top: -5px;left: 0;opacity: 0; /* opacity: 0 透明度为0 */
+        }
+        .img-circle {
+        -moz-border-radius: 50%;
+        -webkit-border-radius: 50%;
+        border-radius: 50%;
+    }
+    </style>
+
+</head>
+<body>
+    <div class="login">
+        <div style="font-size: 30px;margin-left: 230px">用户注册</div>
+       {# enctype="multipart/form-data" form 表单中上传图片时要有 #}
+        <form id="f1" class="form-horizontal" action="/register/" method="POST"  novalidate enctype="multipart/form-data">
+        {% csrf_token %}
+            <div style="position: relative;width: 80px;height: 80px;top: -5px;left: 250px">
+                <img class="img-circle" id="previewImg" style="height:80px;width: 80px;" src="/static/imgs/default.png">
+                {{ obj.avatar }}
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">用户名</label>
+                <div class="col-sm-10">
+                  {{ obj.username }}{{ obj.errors.username.0 }}
+                </div>
+              </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">昵称</label>
+                <div class="col-sm-10">
+                  {{ obj.nickname }}{{ obj.errors.nickname.0 }}
+                </div>
+              </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">邮箱</label>
+                <div class="col-sm-10">
+                  {{ obj.email }}{{ obj.email.errors.0 }}
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-sm-2 control-label">密码</label>
+                <div class="col-sm-10">
+                  {{ obj.passwd }}{{ obj.errors.passwd.0 }}
+                </div>
+              </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">确认密码</label>
+                <div class="col-sm-10">
+                  {{ obj.passwd2 }}{{ obj.errors.passwd2.0 }} <span>{{ obj.non_field_errors }}</span>
+                </div>
+              </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">验证码</label>
+                <div class="col-sm-3">
+                  {{ obj.code }} <span>{{ obj.errors.code.0 }}</span>
+                </div>
+                <div class="col-sm-5">
+                    <img id="im" onclick="changeCode(this)" src="/check_code/" style="width: 100px; height: 35px" title="点击刷新图片">
+                </div>
+            </div>
+              <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                  <input type="submit" class="btn btn-default" value="提交" onclick="upload2()">
+                </div>
+              </div>
+        </form>
+    </div>
+    <script src="/static/jquery-3.2.1.js"></script>
+    <script>
+        // 验证码刷新
+        function changeCode(self) {
+            self.src = self.src + '?'
+        }
+        // 上传图片文件并预览
+        $(function () {
+            bindAvatar();
+        });
+
+        function bindAvatar() {
+            if(window.URL.createObjectURL){
+                bindAvatar2();
+            }else if(window.FileReader){
+                bindAvatar3();
+            }else {
+                bindAvatar1();
+            }
+        }
+        
+        /* Ajax上传 */
+        function bindAvatar1() {
+            $('#imgSelect').change(function () {
+                var obj = $(this)[0].files[0];
+                // Ajax 发送到后台，并获取路径
+                // img.src = 获取路径
+                /*var forData = new FormData();
+                forData.append('key',obj);
+                $.ajax({
+                    url:'/register/',
+                    type:'POST',
+                    data:forData,
+                    contentType:false,
+                    processData:false,
+                    success:function (arg) {
+                        $('#previewImg').attr('src','/'+ arg);
+                    }
+                })*/
+            })
+        }
+        
+        // 本地上传预览 对浏览器有要求
+        function bindAvatar2() {
+            $('#imgSelect').change(function () {
+                var obj = $(this)[0].files[0];
+
+                var v = window.URL.createObjectURL(obj);
+                $('#previewImg').attr('src',v);
+                $('#previewImg').load(function () {
+                    window.URL.revokeObjectURL(v);
+                })
+            })
+        }
+
+    // 本地上传预览，内存自动释放
+        function bindAvatar3() {
+            $('#imgSelect').change(function () {
+                var obj = $(this)[0].files[0];
+
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    $('#previewImg').attr('src',this.result);
+                };
+                reader.readAsDataURL(obj)
+            })
+        }
+
+        // jQuery Ajax上传文件
+        function upload2() {
+            var forData = new FormData();
+            forData.append('avatar',$('#imgSelect')[0].files[0]);
+            $.ajax({
+                url:'/register/',
+                type:'POST',
+                data:forData,
+                contentType:false,
+                processData:false,
+                success:function (arg) {
+                    console.log(arg)
+                }
+            })
+        }
+        
+    </script>
+</body>
+</html>

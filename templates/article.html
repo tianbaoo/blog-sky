@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="/static/bootstrap-3.3.7-dist/css/bootstrap.css">
+    <link rel="stylesheet" href="/static/font-awesome-4.7.0/css/font-awesome.css">
+    <link rel="stylesheet" href="/static/css/commons.css">
+    <link rel="stylesheet" href="/static/css/theme/{{ blog.theme }}.css">
+    <style>
+        .comment{
+            margin-left: 30px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-default no-radius">
+      <div class="container title">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header ">
+          <a class="navbar-brand" href="/{{ blog.site }}/" style="font-size: 35px">{{ blog.title }}</a>
+        </div>
+        <div class="navbar-header ">
+          <a class="navbar-brand" href="/" style="font-size: 28px">博客天地</a>
+        </div>
+        <div class="navbar-header ">
+          <a class="navbar-brand" href="/{{ blog.site }}/" style="font-size: 28px">首页</a>
+        </div>
+      </div><!-- /.container-fluid -->
+    </nav>
+
+    <div class="container">
+        <div class="col-md-3">
+            <div class="panel panel-default">
+                <div class="panel-heading">分类</div>
+                <div class="panel-body">
+                   <ul>
+                       {% for row in category_list %}
+                           <li><a href="/{{ blog.site }}/category/{{ row.category_id }}/">{{ row.category__title }} ({{ row.ct }})</a></li>
+                       {% endfor %}
+                   </ul>
+                </div>
+            </div>
+
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">标签</h3>
+                </div>
+                <div class="panel-body">
+                   <ul>
+                       {% for row in tag_list %}
+                           <li><a href="/{{ blog.site }}/tag/{{ row.tag_id }}/">{{ row.tag__title }} ({{ row.ct }})</a></li>
+                       {% endfor %}
+                   </ul>
+                </div>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">时间</h3>
+                </div>
+                <div class="panel-body">
+                   <ul>
+                       {% for row in create_time_list %}
+                           <li><a href="/{{ blog.site }}/create_time/{{ row.ctime }}/">{{ row.ctime }} ({{ row.c }})</a></li>
+                       {% endfor %}
+                   </ul>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <div class="article-list">
+                <div class="article-item" style="padding: 5px 0">
+                    <h4 class="art-header"><a href="/{{ blog.site }}/{{ article.nid }}.html">{{ article.title }}</a></h4>
+                    <div>{{ article.articledetail.content|safe }}</div>
+                    <div style="height: 30px"></div>
+                    <div class="art-footer">
+                            <a href="#" class="foot foot1" style="padding: 5px 20px 5px 0" onclick="updown(this,{{ article.nid }},1);">
+                                <span class="glyphicon glyphicon-thumbs-up"></span> {# fa fa-thumbs-up点赞图标#}
+                                <sapn id="up">点赞({{ article.up_count }})</sapn>         {# 点赞个数#}
+                            </a>
+                            <a href="#" class="foot foot2" onclick="updown(this,{{ article.nid }},0);">
+                                <span class="glyphicon glyphicon-thumbs-down"></span> {# 踩图标#}
+                                <span id="down">踩({{ article.down_count }})</span>         {# 踩个数#}
+                            </a>
+                            <a href="#" class="foot foot3">
+                                <span class="glyphicon glyphicon-comment"></span> {# 评论图标#}
+                                <span id="comment">评论({{ article.comment_count }})</span>         {# 评论个数#}
+                            </a>
+                            <a href="#" class="foot" id="error">
+                                <span id="err"></span>
+                            </a>
+                        </div>
+                </div>
+{#                <div>{{ comment_str|safe }}</div>#}
+                <div>评论楼：</div>
+                <div id="commentArea">
+                </div>
+                <form action="/{{ blog.site }}/{{ article.nid }}.html" method="POST" novalidate>
+                    <textarea name="commented" id="t1" ></textarea>
+                    <input type="text" style="display: none;" name="user_id" value="{{ current_user_id }}">
+                    <input type="submit" value="提交">
+                </form>
+                <div style="height: 300px;"></div>
+            </div>
+        </div>
+
+    </div>
+    <script src="/static/jquery-3.2.1.js"></script>
+    <script src="/static/kindeditor-4.1.10/kindeditor-all.js"></script>
+    <script>
+        // 字符串.Format() 执行下面的函数
+        String.prototype.Format = function (arg) {
+            // this 当前字符串
+            // arg Format传入的参数
+            // return格式化之后获取的新内容 k:匹配到带大括号{\w+\}  kk:匹配到 \w+
+            var temp = this.replace(/\{(\w+)\}/g,function (k,kk) {
+                return arg[kk];
+            });
+            return temp
+        };
+
+        // 显示多级评论
+        $(function () {
+           // 通过Ajax发送GET请求,获取评论信息
+           // 列表
+           // 通过JS生成结构
+            $.ajax({
+                url:'/comments-{{ article.nid }}.html',
+                type:'GET',
+                dataType:'JSON',
+                success:function (arg) {
+                    if(arg.status){
+                        var comment = commentTree(arg.data);
+                        $('#commentArea').append(comment)
+                    }
+                    else {
+                        alert(arg.msg)
+                    }
+                }
+            })
+        });
+        
+        function commentTree(commentList) {
+            // commentList 是数据库查到的评论数据
+            var comment_str = "<div class='comment'>";
+            // each循环遍历commentList key为1,2,3...索引值,row为每条评论数据
+            $.each(commentList,function (key,row) {
+{#                var temp = "<div class='content'>" + row.content + "</div>";#}
+                // 在前端字典的key可以不加引号
+                var temp = "<div class='content'><a href='' name='reply'></a> {nickname}: {content}</div>".Format({content:row.content,nickname:row.nickname});
+                comment_str += temp;
+                // 三次循环后生成这样的根评论(假设都没有子评论)
+                /*
+                 <div class='comment'>
+                    <div class='content'>row.content</div>
+                    <div class='content'>row.content</div>
+                    <div class='content'>row.content</div>
+                 */
+                if (row.child.length>0){  // 如果根评论child长度大于零,表示有子评论
+                    comment_str += commentTree(row.child)
+                }
+            });
+            comment_str += "</div>";  // 三次循环结束后加上"</div>" 结尾
+            return comment_str
+        }
+        
+        // 点赞和踩功能
+        function updown(self,nid,val){
+            $.ajax({
+                url: '/updown',
+                data:{'val':val,'nid':nid,'csrfmiddlewaretoken':'{{ csrf_token }}'},
+                type: "POST",
+                dataType:'JSON',
+                success:function(arg){
+                    if(arg.status == "200"){
+                        // 显示赞个数+1
+                        $('#up').innerText = $('#up').innerText + 1;
+                        location.reload()
+                    }else if(arg.status=="201"){
+                        // 显示踩个数+1
+                        $('#down').innerText = $('#down').innerText + 1;
+                        location.reload()
+                    }
+                    else if(arg.status=="202"){
+                        // 显示错误信息
+                        alert(arg.msg);
+                    }
+                    else if(arg.status=="203"){
+                        // 显示错误信息
+                         alert(arg.msg);
+                    }else {
+                    }
+                }
+            })
+        }
+
+        KindEditor.create('#t1',{
+            width:'700px',
+            height:'500px',
+            uploadJson: '/upload_img.html', // 在内容中有图片时上传到指定路径
+            extraFileUploadParams:{
+                "csrfmiddlewaretoken":"{{ csrf_token }}"
+            },
+            items:[
+                     'code',  'paste',
+                    'plainpaste', 'wordpaste', '|', 'justifyleft', 'justifycenter', 'justifyright',
+                    'justifyfull', 'insertorderedlist', 'insertunorderedlist',
+                     'clearhtml', 'quickformat', '|', '/',
+                    'formatblock', 'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold',
+                    'italic', 'underline', 'strikethrough', 'lineheight', 'removeformat'
+            ]
+        });
+    </script>
+</body>
+</html>
