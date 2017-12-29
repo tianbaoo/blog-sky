@@ -1,10 +1,10 @@
 # 博客
 线上地址：[博客天地](http://207.246.124.116/) 请挂梯子访问,否则速度会很慢。
 # 开发环境
-Django==1.10.6
-Python==3.6.1
-Pillow==4.2.1
-Boostrap
+1. Django==1.10.6
+2. Python==3.6.1
+3. Pillow==4.2.1
+4. Boostrap
 # 功能
 1. 写博客 （kindeditor-4.1.10 编译器）
 2. Form组件验证用户登录和注册
