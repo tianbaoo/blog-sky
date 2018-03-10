@@ -15,6 +15,11 @@ def layout(request,**kwargs):
     return render(request,'layout.html')
 #装饰器
 def check_login(func):
+    """
+    用来验证用户是否已登录登录的装饰器
+    :param func: 
+    :return: 
+    """
     def wrapper(request,*args,**kwargs):
         try:
             if request.session.get('user_info'):

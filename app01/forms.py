@@ -117,6 +117,9 @@ class RegisterForm(Form):
         self.add_error('passwd2',ValidationError('密码不一致'))
 
 class AddArticleForm(Form):
+    """
+    添加文章的组件
+    """
     article_title = fields.CharField(widget=widgets.TextInput(attrs={'class': "article_title"}),
                                      error_messages={
                                          'required': '文章标题不能为空'
