@@ -1,5 +1,4 @@
-
-
+"""分页组件示例功能"""
 msg_list = [
     # id 为评论者的ID  content 为评论内容 parent_id 为父级ID None表示第一层
     {'id':1,'content':'写的不错','parent_id':None},
@@ -22,7 +21,8 @@ for item in msg_list:
         msg_list_dict[pid]['child'].append(item)
     else:
         result.append(item)
-print(result)
+for i in result:
+    print(i)
 
 '''
 [{'id': 1, 'content': '写的不错', 'parent_id': None, 

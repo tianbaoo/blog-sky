@@ -1,4 +1,7 @@
 class PageInfo(object):
+    """
+    分页组件
+    """
     def __init__(self,current_page,all_count,per_page,base_url,show_page=11):
         """
         :param current_page: 当前页

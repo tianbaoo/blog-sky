@@ -3,6 +3,7 @@
 
 def comment_tree(comment_list):
     """
+    显示多级评论插件
     :param result: [ {id,:child:[xxx]},{}]
     :return:如下格式
     <div class='comment'>

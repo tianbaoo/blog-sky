@@ -1,6 +1,8 @@
 import random
 from PIL import Image,ImageFont,ImageDraw,ImageFilter
-
+"""
+图片验证码插件
+"""
 def rd_check_code(width=100, height=35, char_length=4, font_file='kumo.ttf', font_size=35):
     # width:图片宽度 height:图片高度 char_length:验证码个数 font_file:验证码字体文件路径 font_size:验证码字符大小
     code = []
