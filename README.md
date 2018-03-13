@@ -1,5 +1,5 @@
 # 博客园笔记
-[东方越迁学习笔记](http://www.cnblogs.com/guotianbao/)  
+[个人培训学习笔记](http://www.cnblogs.com/guotianbao/)  
 # 博客
 线上地址：[博客天地](http://207.246.124.116/)  请挂梯子访问,否则速度会很慢，服务器位于纽约新泽西。
 # 开发环境
