@@ -10,6 +10,7 @@ from django.core.exceptions import NON_FIELD_ERRORS
 import os,json
 from django.db.models import Count
 from utils.Pager import PageInfo
+from django.views.decorators.cache import cache_page
 
 def layout(request,**kwargs):
     return render(request,'layout.html')
@@ -36,6 +37,7 @@ def check_login(func):
     return wrapper
 
 # 网站首页
+@cache_page(60 * 15)
 def index(request,*args,**kwargs):
     """
     网站首页
@@ -490,6 +492,7 @@ def upload_img(request):
     return HttpResponse(json.dumps(dic))
 
 # ##################分类的增删改查#####################
+
 def layout_category(request,user_id):
     if request.method == 'GET':
         result = models.Category.objects.filter(blog__user__nid=user_id).all()
@@ -497,6 +500,7 @@ def layout_category(request,user_id):
         return render(request,'layout_category.html',{'result':result,'user':user})
     else:
         pass
+
 def edit_category(request):
     user_id = request.session['user_info'].get('user_id')
     if request.method == 'GET':
@@ -508,6 +512,7 @@ def edit_category(request):
         category_id = request.POST.get('category_id')
         models.Category.objects.filter(blog__user__nid=int(user_id),nid=int(category_id)).update(title=new_category_name)
         return redirect('/layout_category/%s.html'%user_id)
+
 def add_category(request):
     user_id = request.session['user_info'].get('user_id')
     if request.method == 'GET':
@@ -519,7 +524,9 @@ def add_category(request):
         print(blog_id)
         models.Category.objects.create(blog_id=int(blog_id),title=new_category_name)
         return redirect('/layout_category/%s.html'%user_id)
+
 # ##################标签的增删改查#####################
+
 def layout_tag(request,user_id):
     if request.method == 'GET':
         result = models.Tag.objects.filter(blog__user__nid=user_id).all()
@@ -527,6 +534,7 @@ def layout_tag(request,user_id):
         return render(request,'layout_tag.html',{'result':result,'user':user})
     else:
         pass
+
 def edit_tag(request):
     user_id = request.session['user_info'].get('user_id')
     if request.method == 'GET':
@@ -540,6 +548,7 @@ def edit_tag(request):
         print(tag_id)
         models.Tag.objects.filter(blog__user__nid=int(user_id),nid=int(tag_id)).update(title=new_tag_name)
         return redirect('/layout_tag/%s.html'%user_id)
+
 def add_tag(request):
     user_id = request.session['user_info'].get('user_id')
     if request.method == 'GET':
@@ -549,6 +558,7 @@ def add_tag(request):
         new_tag_name = request.POST.get('name')
         models.Tag.objects.create(blog_id=int(blog_id),title=new_tag_name)
         return redirect('/layout_tag/%s.html'%user_id)
+
 
 
 
