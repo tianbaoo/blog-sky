@@ -3,10 +3,20 @@
 # 博客
 线上地址：[博客天地](http://207.246.124.116/)  请挂梯子访问,否则速度会很慢，服务器位于纽约新泽西。
 # 开发环境
-1. Django==1.10.6
-2. Python==3.6.1
-3. Pillow==4.2.1
-4. Boostrap
+Python==3.6.1  
+beautifulsoup4==4.6.0  
+Django==1.10.6  
+lxml==4.1.1  
+Pillow==4.2.1  
+# Windows7下安装运行  
+把blog-sky文件下载下来  
+0.打开cmd窗口输入：pip install virtualenv 创建虚拟环境（前提是你已经安装好pip）  
+1.桌面新建一个名为Test的文件夹,进入该文件夹Shift+鼠标右键打开cmd输入：virtualenv testenv  
+2.Test的文件夹内生成了testenv文件夹，进入testenv文件夹的Scripts文件夹中，Shift+鼠标右键打开cmd输入：activate激活虚拟环境  
+3.把下载的blog-sky文件夹拖入Scripts文件夹中，在cmd中进入blog-sky文件夹：cd blog-sky  
+4.requirements.txt所在blog-sky文件夹内，在cmd输入：pip install -r requirements.txt 回车    
+5.安装完所有的环境依赖后，在cmd中再输入：python manage.py runserver  
+6.不要关闭cmd窗口，去浏览器打开：127.0.0.1:8000 看看是否可以访问。  
 # 功能
 1. 写博客 （kindeditor-4.1.10 编译器）
 2. Form组件验证用户登录和注册
